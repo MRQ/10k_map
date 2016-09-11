@@ -1,6 +1,6 @@
-CXXFLAGS   := -DNO_ECLIPSE -std=c++11 -O2 -g $(shell pkg-config libxml++-2.6 --cflags) -c -Winvalid-pch -fpch-preprocess 
-CXXFLAGS_H := -DNO_ECLIPSE -std=c++11 -O2 -g $(shell pkg-config libxml++-2.6 --cflags)
-LDFLAGS    := -O2 $(shell pkg-config libxml++-2.6 --libs)
+CXXFLAGS   := -DNO_ECLIPSE -std=c++11 -O3 -g $(shell pkg-config libxml++-2.6 --cflags) -c -Winvalid-pch -fpch-preprocess 
+CXXFLAGS_H := -DNO_ECLIPSE -std=c++11 -O3 -g $(shell pkg-config libxml++-2.6 --cflags)
+LDFLAGS    := -O3 -g  $(shell pkg-config libxml++-2.6 --libs)
 
 HEADERS    := $(shell ls src/*.h)
 OBJECTS    := $(shell ls src/*.cpp | sed -e 's,src/,build/,' -e 's,.cpp$$,.o,')
