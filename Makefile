@@ -9,7 +9,7 @@ PROJECT    := 10k_map_generator
 
 .PHONY: all clean
 
-all: build/${PROJECT} | build
+all: build/${PROJECT} build/cochem.svg | build
 
 clean:
 	rm -f src/libs.h.gch
@@ -26,5 +26,11 @@ build/${PROJECT}: ${OBJECTS}
 
 src/libs.h.gch: src/libs.h
 	g++ ${CXXFLAGS_H} src/libs.h -o src/libs.h.gch
+
+build/cochem.paths: build/${PROJECT}
+	./build/${PROJECT} 50.147 7.168 < cochem.osm > build/cochem.paths
+
+build/cochem.svg: build/cochem.paths make_map.sh template.svg
+	./make_map.sh build/cochem.paths > build/cochem.svg
 
 

@@ -2,21 +2,38 @@
 
 #include "OsmParser.h"
 
+// in Quantize.cpp
+double Quantize(double d);
+
 using namespace Osm;
+
+volatile double center_lon = 0;
+volatile double center_lat = 0;
 
 std::tuple<double, double> LocalCoords(const Node& n)
 {
 	return std::tuple<double, double>(
-//		500 + 24000 *(n.lon -7.1809),
-//		500 - 40500 *(n.lat  -50.1513)
-		500 + 36000 *(n.lon -7.168),
-		500 - 60750 *(n.lat  -50.147)
+		// cochem
+		//36000 *(n.lon -7.168),
+		//-60750 *(n.lat  -50.147)
+		// aachen
+		//36000 * (n.lon - 6.0998001),
+		//-60750 * (n.lat - 50.7795198)
+		36000 * (n.lon - center_lon),
+		-60750 * (n.lat - center_lat)
 	);
 };
 
-int main()
+
+int main(int argc, char *argv[])
 {
 	using std::cin;
+
+	if(argc >=3)
+	{
+		center_lat = boost::lexical_cast<double>(argv[1]);
+		center_lon = boost::lexical_cast<double>(argv[2]);
+	};
 
 	OsmParser parser;
 	char buffer[512];
@@ -60,8 +77,8 @@ int main()
 		if(tag_class.empty())
 			continue;
 
-		std::cout << "<path class=\"" << tag_class << "\" d=\"";
 		bool jump = true;
+		bool wrapper_written = false;
 		for(uint64_t node_id : way.node_ids) {
 			const Node& n = parser.FindNode(node_id);
 			if(n.lon == 0 && n.lat == 0) {
@@ -69,11 +86,24 @@ int main()
 				continue;
 			};
 			std::tuple<double, double> xy = LocalCoords(n);
+			if(
+				std::abs(std::get<0>(xy)) +
+				std::abs(std::get<1>(xy)) > 2000
+			) {
+				jump = true;
+				continue;
+			};
+			if(!wrapper_written) {
+				std::cout << "<path class=\"";
+				std::cout << tag_class << "\" d=\"";
+				wrapper_written = true;
+			};
 			std::cout << (jump ? "M " : "L ");
 			jump = false;
-			std::cout << std::floor(std::get<0>(xy)) << " ";
-			std::cout << std::floor(std::get<1>(xy)) << " ";
+			std::cout << Quantize(std::get<0>(xy)) << " ";
+			std::cout << Quantize(std::get<1>(xy)) << " ";
 		}
-		std::cout << "\" />\n";
+		if(wrapper_written)
+			std::cout << "\" />\n";
 	}
 };
