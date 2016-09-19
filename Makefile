@@ -33,4 +33,9 @@ build/cochem.paths: build/${PROJECT}
 build/cochem.svg: build/cochem.paths make_map.sh template.svg
 	./make_map.sh build/cochem.paths > build/cochem.svg
 
+build/aachen.paths: build/${PROJECT}
+	bzip2 -d < nordrhein-westfalen.osm.bz2 | ./build/${PROJECT} 50.7795 6.0998 > build/aachen.paths
+
+build/aachen.svg: build/aachen.paths make_map.sh template.svg
+	./make_map.sh build/aachen.paths > build/aachen.svg
 

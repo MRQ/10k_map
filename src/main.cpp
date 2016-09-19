@@ -19,8 +19,8 @@ std::tuple<double, double> LocalCoords(const Node& n)
 		// aachen
 		//36000 * (n.lon - 6.0998001),
 		//-60750 * (n.lat - 50.7795198)
-		36000 * (n.lon - center_lon),
-		-60750 * (n.lat - center_lat)
+		68312 * (n.lon - center_lon),
+		-115276 * (n.lat - center_lat)
 	);
 };
 
@@ -52,26 +52,33 @@ int main(int argc, char *argv[])
 			continue;
 
 		std::string tag_class;
+		double radius = 500;
 		if(hw == "motorway" || hw == "motorway_link") {
 			tag_class = "m";
+			radius = 12600;
 		}
 		else if(hw == "trunk" || hw == "trunk_link") {
 			tag_class = "t";
+			radius = 12600;
 		}
 		else if(hw == "primary" || hw == "primary_link") {
 			tag_class = "p";
+			radius = 2100;
 		}
 		else if(hw == "secondary" || hw == "secondary_link") {
 			tag_class = "s";
+			radius = 4200;
 		}
 		else if(hw == "tertiary" || hw == "tertiary_link") {
 			tag_class = "d";
+			radius = 4200;
 		}
 		else if(
 			hw == "unclassified"  || hw == "residential" ||
 			hw == "living_street" || hw == "pedestrian"
 		) {
 			tag_class = "r";
+			radius = 1400;
 		};
 
 		if(tag_class.empty())
@@ -87,8 +94,9 @@ int main(int argc, char *argv[])
 			};
 			std::tuple<double, double> xy = LocalCoords(n);
 			if(
-				std::abs(std::get<0>(xy)) +
-				std::abs(std::get<1>(xy)) > 2000
+				std::pow(std::get<0>(xy), 2) +
+				std::pow(std::get<1>(xy), 2) >
+				std::pow(radius, 2)
 			) {
 				jump = true;
 				continue;
