@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 		}
 		else if(hw == "primary" || hw == "primary_link") {
 			tag_class = "p";
-			radius = 2100;
+			radius = 4200;
 		}
 		else if(hw == "secondary" || hw == "secondary_link") {
 			tag_class = "s";
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 		}
 		else if(hw == "tertiary" || hw == "tertiary_link") {
 			tag_class = "d";
-			radius = 4200;
+			radius = 1400;
 		}
 		else if(
 			hw == "unclassified"  || hw == "residential" ||
