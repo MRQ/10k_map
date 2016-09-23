@@ -84,13 +84,13 @@ TagKey OsmParser::FindTagKey(const Glib::ustring& s)
 	return NOT_FOUND;
 };
 
-const Osm::Node& OsmParser::FindNode(uint64_t id)
+Osm::Node& OsmParser::FindNode(uint64_t id)
 {
-	static const Node dummy;
+	static Node dummy;
 
 	Node correct_id;
 	correct_id.id = id;
-	const auto found = std::equal_range(
+	auto found = std::equal_range(
 		nodes.begin(),
 		nodes.end(),
 		correct_id,
@@ -167,16 +167,7 @@ void OsmParser::on_end_element(const Glib::ustring& name)
 		return;
 
 	if(name.raw() == "osm") {
-		std::sort(
-			ways.begin(),
-			ways.end(),
-			[](const Way& a, const Way& b) {return a.id < b.id;}
-		);
-		std::sort(
-			nodes.begin(),
-			nodes.end(),
-			[](const Node& a, const Node& b) {return a.id < b.id;}
-		);
+		Finalize();
 		return;
 	};
 
@@ -191,6 +182,28 @@ void OsmParser::on_end_element(const Glib::ustring& name)
 
 	open_element = CLOSED;
 }
+
+void OsmParser::Finalize()
+{
+	std::sort(
+		ways.begin(),
+		ways.end(),
+		[](const Way& a, const Way& b) {return a.id < b.id;}
+	);
+	std::sort(
+		nodes.begin(),
+		nodes.end(),
+		[](const Node& a, const Node& b) {return a.id < b.id;}
+	);
+
+	// -- Reference counts --
+	for(const Way& way : ways) {
+		for(uint64_t node_id : way.node_ids) {
+			Node& n = FindNode(node_id);
+			++n.refs;
+		}
+	};
+};
 
 const std::string Node::empty = "";
 const std::string Way::empty = "";

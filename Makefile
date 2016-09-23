@@ -1,6 +1,6 @@
-CXXFLAGS   := -DNO_ECLIPSE -std=c++11 -O3 -g $(shell pkg-config libxml++-2.6 --cflags) -c -Winvalid-pch -fpch-preprocess 
-CXXFLAGS_H := -DNO_ECLIPSE -std=c++11 -O3 -g $(shell pkg-config libxml++-2.6 --cflags)
-LDFLAGS    := -O3 -g  $(shell pkg-config libxml++-2.6 --libs)
+CXXFLAGS   := -DNO_ECLIPSE -std=c++11 -O3 -g $(shell pkg-config eigen3 libxml++-2.6 --cflags) -c -Winvalid-pch -fpch-preprocess 
+CXXFLAGS_H := -DNO_ECLIPSE -std=c++11 -O3 -g $(shell pkg-config eigen3 libxml++-2.6 --cflags)
+LDFLAGS    := -O3 -g  $(shell pkg-config eigen3 libxml++-2.6 --libs)
 
 HEADERS    := $(shell ls src/*.h)
 OBJECTS    := $(shell ls src/*.cpp | sed -e 's,src/,build/,' -e 's,.cpp$$,.o,')
@@ -34,8 +34,12 @@ build/cochem.svg: build/cochem.paths make_map.sh template.svg
 	./make_map.sh build/cochem.paths > build/cochem.svg
 
 build/aachen.paths: build/${PROJECT}
-	bzip2 -d < nordrhein-westfalen.osm.bz2 | ./build/${PROJECT} 50.7795 6.0998 > build/aachen.paths
+	#bzip2 -d < nordrhein-westfalen.osm.bz2 | ./build/${PROJECT} 50.7795 6.0998 > build/aachen.paths
+	./build/${PROJECT} 50.785 6.106 < aachen-overpass03.osm > build/aachen.paths
 
 build/aachen.svg: build/aachen.paths make_map.sh template.svg
 	./make_map.sh build/aachen.paths > build/aachen.svg
 
+build/%.svgz: build/%.svg
+	gzip -9 < $< > $@
+	stat --format="$@: %s bytes" $@

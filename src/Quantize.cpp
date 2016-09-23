@@ -1,4 +1,4 @@
-
+#include "libs.h"
 #include <cmath>
 
 double Quantize(double d)
@@ -17,6 +17,14 @@ double Quantize(double d)
 	const double log_quant = 128;
 	const double l = floor(0.5 + std::log10(d) * log_quant) / log_quant;
 	return scale * floor(0.5 + pow(10.0, l));
+};
+
+Eigen::Vector2d Quantize(Eigen::Vector2d xy)
+{
+	return Eigen::Vector2d(
+		Quantize(xy(0)),
+		Quantize(xy(1))
+	);
 };
 
 #if 0

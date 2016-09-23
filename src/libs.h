@@ -7,6 +7,8 @@
 #include <string>
 #include <map>
 
+#include <Eigen/Dense>
+
 #include <stdint.h>
 
 #include <boost/lexical_cast.hpp>

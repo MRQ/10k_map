@@ -3,37 +3,37 @@
 <style type="text/css">
 #snet, .snet {fill: none; stroke-linecap: round; stroke-linejoin: bevel}
 
-.outline .m {stroke: #e15983; stroke-width: 14}
-.fill .m {stroke: #e892a2; stroke-width: 12}
-.z0 .z0 .outline .m {stroke-width: 28}
-.z0 .z0 .fill .m {stroke-width: 20}
+.mo {stroke: #e15983; stroke-width: 14}
+.fill .mo {stroke: #e892a2; stroke-width: 12}
+.z0 .z0 .outline .mo {stroke-width: 28}
+.z0 .z0 .fill .mo {stroke-width: 20}
 
-.outline .t {stroke: #e15983; stroke-width: 14}
-.fill .t {stroke: #e892a2; stroke-width: 12}
-.z0 .z0 .outline t {stroke-width: 28}
-.z0 .z0 .fill .t {stroke-width: 20}
+.pr {stroke: #b78b34; stroke-width: 13}
+.fill .pr {stroke: #fcd6a4; stroke-width: 11}
+.z0 .z0 .outline .pr {stroke-width: 26}
+.z0 .z0 .fill .pr {stroke-width: 18}
 
-.outline .p {stroke: #b78b34; stroke-width: 13}
-.fill .p {stroke: #fcd6a4; stroke-width: 11}
-.z0 .z0 .outline .p {stroke-width: 26}
-.z0 .z0 .fill .p {stroke-width: 18}
+.se {stroke: #96a03b; stroke-width: 12}
+.fill .se {stroke: #f7fabf; stroke-width: 10.5}
+.z0 .z0 .outline .se {stroke-width: 24}
+.z0 .z0 .fill .se {stroke-width: 16}
+.z0 .z0 .z0 .z0 .z0 .outline .se {display: none}
+.z0 .z0 .z0 .z0 .z0 .fill .se {display: none}
 
-.outline .s {stroke: #96a03b; stroke-width: 12}
-.fill .s {stroke: #f7fabf; stroke-width: 10.5}
-.z0 .z0 .outline .s {stroke-width: 24}
-.z0 .z0 .fill .s {stroke-width: 16}
-.z0 .z0 .z0 .z0 .z0 .outline .s {display: none}
-.z0 .z0 .z0 .z0 .z0 .fill .s {display: none}
+.te {stroke: #cccbcb; stroke-width: 11}
+.fill .te {stroke: #fff; stroke-width: 9}
+.z0 .z0 .z0 .outline .te {display: none}
+.z0 .z0 .z0 .fill .te {display: none}
 
-.outline .d {stroke: #cccbcb; stroke-width: 11}
-.fill .d {stroke: #fff; stroke-width: 9}
-.z0 .z0 .z0 .outline .d {display: none}
-.z0 .z0 .z0 .fill .d {display: none}
+.st {stroke: #cccbcb; stroke-width: 8}
+.fill .st {stroke: #fff; stroke-width: 6}
+.z0 .z0 .z0 .outline .st {display: none}
+.z0 .z0 .z0 .fill .st {display: none}
 
-.outline .r {stroke: #cccbcb; stroke-width: 8}
-.fill .r {stroke: #fff; stroke-width: 6}
-.z0 .z0 .z0 .outline .r {display: none}
-.z0 .z0 .z0 .fill .r {display: none}
+.rw {stroke: #555; stroke-width: 8}
+.fill .rw {stroke: #eee; stroke-width: 3; stroke-dasharray: 30 30}
+.z0 .z0 .outline .rw {stroke-width: 16}
+.z0 .z0 .fill .rw {stroke-width: 6}
 
 
 /*.z0, .z1 {transition: all 0.2s linear}*/

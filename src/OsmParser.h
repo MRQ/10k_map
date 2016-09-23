@@ -1,4 +1,6 @@
 #include "libs.h"
+#ifndef OsmParser_h_Tb2LxfVz2O17
+#define OsmParser_h_Tb2LxfVz2O17
 
 namespace Osm
 {
@@ -39,13 +41,14 @@ enum TagKey // keys for OSM-Tags
 typedef std::vector<std::tuple<TagKey, std::string> > Tags;
 struct Node
 {
-	Node() : id(0), lat(0), lon(0) {};
+	Node() : id(0), lat(0), lon(0), refs(0) {};
 	void Output(std::ostream& out) const;
 	const std::string& Tag(TagKey) const;
 
 	uint64_t id;
 	double lat;
 	double lon;
+	size_t refs;
 	Tags tags;
 
 private:
@@ -71,7 +74,7 @@ class OsmParser : public xmlpp::SaxParser
 public:
 	OsmParser();
 	virtual ~OsmParser() {};
-	const Osm::Node& FindNode(uint64_t id);
+	Osm::Node& FindNode(uint64_t id);
 
 	std::vector<Osm::Way> ways;
 	std::vector<Osm::Node> nodes;
@@ -91,6 +94,7 @@ protected:
 	// -- Functions --
 	static std::vector<std::string> TagKeyNames();
 	Osm::TagKey FindTagKey(const Glib::ustring& s);
+	void Finalize();
 
 	//overrides:
 	virtual void on_start_element(
@@ -107,3 +111,4 @@ protected:
 	Osm::Way open_way; ///< currently processed way
 };
 
+#endif // OsmParser_h_Tb2LxfVz2O17
