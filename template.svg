@@ -127,4 +127,5 @@ function drop(ev)
 <rect x="5" y="40" width="30" height="30" stroke="#222" stroke-width="2" fill="#ffe" />
 <path d="M 9 55 h 22" stroke="#000" stroke-width="2" fill="none" />
 </g>
+<text x="0" y="598" font-family="sans" font-size="8" fill="black" >© OpenStreetMap contributors</text>
 </svg>
