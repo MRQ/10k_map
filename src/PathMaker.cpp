@@ -92,7 +92,7 @@ bool PathMaker::OutOfRange(Eigen::Vector2d local_coords, Segment::Class cls)
 	{
 	case Segment::HIGHWAY_STREET:
 	case Segment::HIGHWAY_TERTIARY:
-		return (dist > 1300);
+		return (dist > 1260);
 	case Segment::HIGHWAY_SECONDARY:
 	case Segment::HIGHWAY_SECONDARY_LINK:
 	case Segment::HIGHWAY_PRIMARY:

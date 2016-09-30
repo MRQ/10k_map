@@ -110,7 +110,7 @@ function drop(ev)
 <g id="streets" transform="translate(300 300)">
 <path d="M -2000 -2000 h 4000 v 4000 H -2000 z" fill="#f2efe9" />
 <g class="z1"><g class="z1"><g class="z1"><g class="z1"><g class="z1"><g id="zp" class="z0"><g id="shifter" transform="translate(0 0)">
-<circle cx="0" cy="0" r="1300" fill="none" stroke="#cccbcb" stroke-width="2" stroke-dasharray="40 30" />
+<circle cx="0" cy="0" r="1260" fill="none" stroke="#cccbcb" stroke-width="2" stroke-dasharray="40 30" />
 <!--<circle cx="0" cy="0" r="2100" fill="none" stroke="#96a03b" stroke-width="4" stroke-dasharray="80 60" />-->
 <circle cx="0" cy="0" r="2100" fill="none" stroke="#e15983" stroke-width="8" stroke-dasharray="160 120" />
 
