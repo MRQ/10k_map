@@ -1,4 +1,5 @@
 #include "OsmParser.h"
+#include "PathMaker.h"
 
 using namespace Osm;
 
@@ -35,7 +36,9 @@ std::vector<std::string> OsmParser::TagKeyNames()
 	r[REF]         = "ref";
 	r[RELIGION]    = "religion";
 	r[ROUTE]       = "route";
+	r[SERVICE]     = "service";
 	r[SHOP]        = "shop";
+	r[SHOWNAME]    = "svgmap:show_name";
 	r[TOURISM]     = "tourism";
 	r[TRACKTYPE]   = "tracktype";
 	r[TUNNEL]      = "tunnel";
@@ -70,8 +73,8 @@ TagKey OsmParser::FindTagKey(const Glib::ustring& s)
 	case 'n': begin = NAME;        end = ONEWAY;      break;
 	case 'o': begin = ONEWAY;      end = PLACE;       break;
 	case 'p': begin = PLACE;       end = RAILWAY;     break;
-	case 'r': begin = RAILWAY;     end = SHOP;        break;
-	case 's': begin = SHOP;        end = TOURISM;     break;
+	case 'r': begin = RAILWAY;     end = SERVICE;     break;
+	case 's': begin = SERVICE;     end = TOURISM;     break;
 	case 't': begin = TOURISM;     end = WATERWAY;    break;
 	case 'w': begin = WATERWAY;    end = TAG_KEY_END; break;
 	default:  begin = NOT_FOUND;   end = NOT_FOUND;   break;
@@ -198,6 +201,9 @@ void OsmParser::Finalize()
 
 	// -- Reference counts --
 	for(const Way& way : ways) {
+		if(PathMaker::Segment::FindClass(way) == PathMaker::Segment::DONT_DRAW)
+			continue;
+
 		for(uint64_t node_id : way.node_ids) {
 			Node& n = FindNode(node_id);
 			++n.refs;

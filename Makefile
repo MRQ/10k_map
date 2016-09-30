@@ -33,9 +33,9 @@ build/cochem.paths: build/${PROJECT}
 build/cochem.svg: build/cochem.paths make_map.sh template.svg
 	./make_map.sh build/cochem.paths > build/cochem.svg
 
-build/aachen.paths: build/${PROJECT}
+build/aachen.paths: build/${PROJECT} aachen-overpass04_edited.osm
 	#bzip2 -d < nordrhein-westfalen.osm.bz2 | ./build/${PROJECT} 50.7795 6.0998 > build/aachen.paths
-	./build/${PROJECT} 50.785 6.106 < aachen-overpass03.osm > build/aachen.paths
+	./build/${PROJECT} 50.7856 6.1071 < aachen-overpass04_edited.osm > build/aachen.paths
 
 build/aachen.svg: build/aachen.paths make_map.sh template.svg
 	./make_map.sh build/aachen.paths > build/aachen.svg
@@ -43,3 +43,6 @@ build/aachen.svg: build/aachen.paths make_map.sh template.svg
 build/%.svgz: build/%.svg
 	gzip -9 < $< > $@
 	stat --format="$@: %s bytes" $@
+	gvfs-copy build/aachen.svgz sftp://mrq@dasevil.de/var/customers/webs/mrq/public_html/up/10k-map/map.svgz
+	gvfs-copy index.html sftp://mrq@dasevil.de/var/customers/webs/mrq/public_html/up/10k-map/index.html
+	

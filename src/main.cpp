@@ -21,7 +21,7 @@ Eigen::Vector2d LocalCoords(const Node& n)
 		//36000 * (n.lon - 6.0998001),
 		//-60750 * (n.lat - 50.7795198)
 		68312 * (n.lon - center_lon),
-		-115276 * (n.lat - center_lat)
+		-103748 * (n.lat - center_lat)
 	);
 };
 
@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
 
 	PathMaker path_maker;
 	path_maker.ImportSegments(parser);
+	path_maker.Approximate();
 	path_maker.Output(std::cout);
 
 	return 0;

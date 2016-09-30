@@ -14,7 +14,7 @@ double Quantize(double d)
 	scale = std::copysign(scale, d);
 	d = std::abs(d);
 
-	const double log_quant = 128;
+	const double log_quant = 256;
 	const double l = floor(0.5 + std::log10(d) * log_quant) / log_quant;
 	return scale * floor(0.5 + pow(10.0, l));
 };
