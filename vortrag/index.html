@@ -1,377 +1,214 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-	<head>
-		<meta charset="utf-8">
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/cccac-bw.css" id="theme">
 
-		<title>reveal.js - The HTML Presentation Framework</title>
+	<!-- For syntax highlighting -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
 
-		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
-		<meta name="author" content="Hakim El Hattab">
+	<!--[if lt IE 9]>
+	<script src="lib/js/html5shiv.js"></script>
+	<![endif]-->
+	<title>Vortrag 10k-Karte</title>
+	<style>
+	section.largetransparent {
+		background-color: transparent !important;
+		top: -378px !important;
+		border: 0px !important;
+		padding: 0px;
+	}
+	.reveal section img.plain {
+		margin: 0px;
+		border: 0px;
+		box-shadow: none;
+		background-color: transparent;
+	}
+	</style>
+</head>
 
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<body>
 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<div class="reveal">
 
-		<link rel="stylesheet" href="css/reveal.min.css">
-		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
 
-		<!-- For syntax highlighting -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+	<section>
+		<h1>OpenStreetMap<br/> in 10k</h1>
+		<p>
+			<pre>git clone <a href="https://github.com/MRQ/10k_map">https://github.com/MRQ/10k_map</a></pre>
+		</p>
+		<p>Inhalt:</p>
+		<ol>
+			<li>Wettbewerb <em>10K Apart</em></li>
+			<li>Overpass API</li>
+			<li>Eigener Code</li>
+			<li>Ausblick / Unzulänglichkeiten</li>
+		</ol>
+	</section>
 
-		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
-		<script>
-			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
-		</script>
+	<section>
+		<section>
+			<p><a href="https://a-k-apart.com/">https://a-k-apart.com/</a></p>
+			<iframe src="saved_pages/a-k-apart.html" width="1000" height="530">
+			</iframe>
+		</section>
+		<section>
+			<h2>10K Apart, die Regeln</h2>
+			<ul>
+				<li>Nutzbare Seite, nachdem die ersten 10 KiB geladen geladen sind</li>
+				<li>Seite sollte <em>progressive enhancement</em> nutzen</li>
+				<li>HTTP-Header zählen nicht, HTTP-Kompression erlaubt (→ gzip)</li>
+				<li>Javascript erlaubt</li>
+				<li>Jury-Entscheid</li>
+			</ul>
+			<aside class="notes">
+				<div>progressive enhancement: Basis-Seite, die weitere Komponenten nachläd.</div>
+				<div>Text-Browser-Test angekündigt</div>
+			</aside>
+		</section>
+			<section class="largetransparent">
+			<iframe src="../index.html" width="1200" height="750">
+			</iframe>
+		</section>
+	</section>
+	<section>
+		<section>
+			<h2>Datenquelle</h2>
+			<p>
+				<div><a href="http://download.geofabrik.de/europe/germany/nordrhein-westfalen/koeln-regbez.html">http://download.geofabrik.de/europe/germany/nordrhein-westfalen/koeln-regbez.html</a></div>
+				<div>koeln-regbez-latest.osm.bz2, 259 MB</div>
+			</p>
+			Nachteile:
+			<ul>
+				<li>Reicht nicht über die Grenzen nach NL / BE.</li>
+				<li>1173 MiB dekomprimiertes XML, Parsing dauert lang</li>
+			</ul>
+		</section>
+		<section>
+			<h2><img style="display: block; float: left; height: 70px" class="plain" src="saved_pages/overpass-api.png" alt="Overpass API" /><a style="display: block; height: 70px" href="http://www.overpass-api.de/">http://www.overpass-api.de/</a></h2>
+			<p>Testbar auf <a href="http://overpass-turbo.eu/">http://overpass-turbo.eu/</a></p>
+			<img src="saved_pages/overpass-turbo.png" />
+		</section>
+		<section>
+		<h2>Overpass query language</h2>
+		<pre><code class="cpp" style="max-height: none">[timeout:120];
+// ↑ Um den Server bei einem Schreibfehler nicht zu überlasten.
+(
+  (
+    // way: Datentyp in der Ausgabe.
+    // (): Auswahl
+    // around: (radius/m), (lat/°), (lon/°)
+    // []: Filter
+    way(around:6000,50.785,6.106)["highway"~"motorway|motorway_link| ↴
+    ↳ trunk|trunk_link|primary|primary_link|secondary|secondary_link"];
+    way(around:4000,50.785,6.106)["railway"];
+    way(around:4000,50.785,6.106)["landuse"];
+    way(around:2400,50.785,6.106)["highway"];
+  );
+  &gt;;
+  // ↑ Alle Nodes zu diesen Ways nachladen.
+  node(around:4800,50.785,6.106)["place"];
+);
+out body; // alle benötigten Daten ausgeben</code></pre>
+			<aside class="notes">
+				<div>Overpass QL kann noch deutlich mehr.</div>
+				<div>Beispiel für ein längeres Query: Alle Kinos in Bonn, Abstand zu Bushalt &lt; 100m</div>
+				<div>große Auswahlen sind langsam, stark einschränkende Filter machen es nicht besser.</div>
+			</aside>
+		</section>
+	</section>
+	<section> <!-- eigener Code -->
+		<section>
+			<h2>libxml++ ☺</h2>
+			<p>SAX-Parser verfügbar:</p>
+			<pre><code class="cpp">class OsmParser : public xmlpp::SaxParser
+{
+// …
+protected:
+	virtual void on_start_element(
+		const Glib::ustring& name,
+		const AttributeList& properties
+	);
+	virtual void on_end_element(const Glib::ustring& name);
+// …
+};</code></pre>
+			<aside class="notes">
+				<div>Ich war auf einem XML-Parser den es sich auch für zukünftige Projekte lohnt anzugucken.</div>
+				<div>Vollständige XML-Unterstützung hier nicht notwendig, aber ich bevorzuge Korrektheit.</div>
+			</aside>
+		</section>
+		<section>
+			<h2>libxml++ ☹</h2>
+			<pre>$ time bzcat nordrhein-westfalen.osm.bz2 | ↴
+    ↳ operf --callgraph ./build/10k_map_generator 50.7795 6.0998
+operf: Profiler started
 
-		<!--[if lt IE 9]>
-		<script src="lib/js/html5shiv.js"></script>
-		<![endif]-->
-	</head>
+…
+WARNING: Lost samples detected! See /…/oprofile_data/samples/operf.log for details.
 
-	<body>
+Profiling done.
 
-		<div class="reveal">
+real	2m41.436s
+user	6m21.772s
+sys	0m7.244s</pre>
+		<pre>opreport --accumulated --symbols</pre>
+		<table style="font-size: 0.6em; line-height: 1em; margin-left: 3em">
+		<tr><td>13,8%</td><td>libxml2.so.2.9.1</td></tr>		
+		<tr><td>&#8199;6,6%</td><td>_gconv_get_builtin_trans</td></tr>
+		<tr><td>&#8199;1,4%</td><td>_gconv_lookup_cache</td></tr>
+		<tr><td>&#8199;1,4%</td><td>_gconv_transform_internal_ascii</td></tr>
+		<tr><td>&#8199;1,1%</td><td>_gconv_transform_utf8_internal</td></tr>		
+		<tr><td>&#8199;1,1%</td><td>iconv_open</td></tr>
+		</table>
+		→ <code>Glib::ustring</code>
+		<aside class="notes">
+			<div>Also mindestens 12% Overhead durch Unicode-Transformationen</div>
+		</aside>
+		</section>
+	</section>
+</div>
 
-			<!-- Any section element inside of this container is displayed as a slide -->
-			<div class="slides">
+</div> <!-- end class=reveal -->
 
-				<section>
-					<h1>Reveal.js</h1>
-					<h3>HTML Presentations Made Easy</h3>
-					<p>
-						<small>Created by <a href="http://hakim.se">Hakim El Hattab</a> / <a href="http://twitter.com/hakimel">@hakimel</a></small>
-					</p>
-				</section>
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
 
-				<section>
-					<h2>Heads Up</h2>
-					<p>
-						reveal.js is a framework for easily creating beautiful presentations using HTML. You'll need a browser with
-						support for CSS 3D transforms to see it in its full glory.
-					</p>
+<script>
 
-					<aside class="notes">
-						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
-					</aside>
-				</section>
+	// Full list of configuration options available here:
+	// https://github.com/hakimel/reveal.js#configuration
+	Reveal.initialize({
+		controls: true,
+		progress: true,
+		history: true,
+		center: true,
+		rollingLinks: false,
 
-				<!-- Example of nested vertical slides -->
-				<section>
-					<section>
-						<h2>Vertical Slides</h2>
-						<p>
-							Slides can be nested inside of other slides,
-							try pressing <a href="#" class="navigate-down">down</a>.
-						</p>
-						<a href="#" class="image navigate-down">
-							<img width="178" height="238" src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-						</a>
-					</section>
-					<section>
-						<h2>Basement Level 1</h2>
-						<p>Press down or up to navigate.</p>
-					</section>
-					<section>
-						<h2>Basement Level 2</h2>
-						<p>Cornify</p>
-						<a class="test" href="http://cornify.com">
-							<img width="280" height="326" src="https://s3.amazonaws.com/hakim-static/reveal-js/cornify.gif" alt="Unicorn">
-						</a>
-					</section>
-					<section>
-						<h2>Basement Level 3</h2>
-						<p>That's it, time to go back up.</p>
-						<a href="#/2" class="image">
-							<img width="178" height="238" src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Up arrow" style="-webkit-transform: rotate(180deg);">
-						</a>
-					</section>
-				</section>
+		theme: Reveal.getQueryHash().theme || 'cccac-bw', // available themes are in /css/theme
+		transition: Reveal.getQueryHash().transition || 'none', // default/cube/page/concave/zoom/linear/fade/none
 
-				<section>
-					<h2>Point of View</h2>
-					<p>
-						Press <strong>ESC</strong> to enter the slide overview. Hold down alt and click on any element to zoom in on it using <a href="http://lab.hakim.se/zoom-js">zoom.js</a>. Alt + click anywhere to zoom back out.
-					</p>
-				</section>
+		// Optional libraries used to extend on reveal.js
+		dependencies: [
+			{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+			{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+			{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+			{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+			{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+			// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+		],
+		width: (1380 - 130*2),
+		height: 710,
+		margin: 0.0,
+		maxScale: 1.0
+	});
 
-				<section>
-					<h2>rvl.io</h2>
-					<p>
-						If you don't like writing slides in HTML you can use the online editor <a href="http://www.rvl.io" target="_blank">rvl.io</a>.
-					</p>
-				</section>
+</script>
 
-				<section>
-					<h2>Works in Mobile Safari</h2>
-					<p>
-						Try it out! You can swipe through the slides and pinch your way to the overview.
-					</p>
-				</section>
-
-				<section>
-					<h2>Marvelous Unordered List</h2>
-					<ul>
-						<li>No order here</li>
-						<li>Or here</li>
-						<li>Or here</li>
-						<li>Or here</li>
-					</ul>
-				</section>
-
-				<section>
-					<h2>Fantastic Ordered List</h2>
-					<ol>
-						<li>One is smaller than...</li>
-						<li>Two is smaller than...</li>
-						<li>Three!</li>
-					</ol>
-				</section>
-
-				<section data-markdown>
-					<script type="text/template">
-						## Markdown support
-
-						For those of you who like that sort of thing. Instructions and a bit more info available [here](https://github.com/hakimel/reveal.js#markdown).
-
-							<section data-markdown>
-							  ## Markdown support
-
-							  For those of you who like that sort of thing.
-							  Instructions and a bit more info available [here](https://github.com/hakimel/reveal.js#markdown).
-							</section>
-					</script>
-				</section>
-
-				<section id="transitions">
-					<h2>Transition Styles</h2>
-					<p>
-						You can select from different transitions, like: <br>
-						<a href="?transition=cube#/transitions">Cube</a> -
-						<a href="?transition=page#/transitions">Page</a> -
-						<a href="?transition=concave#/transitions">Concave</a> -
-						<a href="?transition=zoom#/transitions">Zoom</a> -
-						<a href="?transition=linear#/transitions">Linear</a> -
-						<a href="?transition=fade#/transitions">Fade</a> -
-						<a href="?transition=none#/transitions">None</a> -
-						<a href="?#/transitions">Default</a>
-					</p>
-				</section>
-
-				<section id="themes">
-					<h2>Themes</h2>
-					<p>
-						Reveal.js comes with a few themes built in: <br>
-						<a href="?theme=sky#/themes">Sky</a> -
-						<a href="?theme=beige#/themes">Beige</a> -
-						<a href="?theme=simple#/themes">Simple</a> -
-						<a href="?theme=serif#/themes">Serif</a> -
-						<a href="?theme=night#/themes">Night</a> -
-						<a href="?#/themes">Default</a>
-					</p>
-					<p>
-						<small>
-							* Theme demos are loaded after the presentation which leads to flicker. In production you should load your theme in the <code>&lt;head&gt;</code> using a <code>&lt;link&gt;</code>.
-						</small>
-					</p>
-				</section>
-
-				<section>
-					<section data-state="alert">
-						<h2>Global State</h2>
-						<p>
-							Set <code>data-state="something"</code> on a slide and <code>"something"</code>
-							will be added as a class to the document element when the slide is open. This lets you
-							apply broader style changes, like switching the background.
-						</p>
-						<a href="#" class="image navigate-down">
-							<img width="178" height="238" src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-						</a>
-					</section>
-					<section data-state="blackout">
-						<h2>"blackout"</h2>
-						<a href="#" class="image navigate-down">
-							<img width="178" height="238" src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-						</a>
-					</section>
-					<section data-state="soothe">
-						<h2>"soothe"</h2>
-						<a href="#" class="image navigate-next">
-							<img width="178" height="238" src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Up arrow" style="-webkit-transform: rotate(-90deg);">
-						</a>
-					</section>
-				</section>
-
-				<section data-state="customevent">
-					<h2>Custom Events</h2>
-					<p>
-						Additionally custom events can be triggered on a per slide basis by binding to the <code>data-state</code> name.
-					</p>
-					<pre><code contenteditable style="font-size: 18px; margin-top: 20px;">Reveal.addEventListener( 'customevent', function() {
-	console.log( '"customevent" has fired' );
-} );
-					</code></pre>
-				</section>
-
-				<section>
-					<h2>Clever Quotes</h2>
-					<p>
-						These guys come in two forms, inline: <q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-						The nice thing about standards is that there are so many to choose from</q> and block:
-					</p>
-					<blockquote cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-						For years there has been a theory that millions of monkeys typing at random on millions of typewriters would
-						reproduce the entire works of Shakespeare. The Internet has proven this theory to be untrue.
-					</blockquote>
-				</section>
-
-				<section>
-					<h2>Pretty Code</h2>
-					<pre><code contenteditable>
-function linkify( selector ) {
-  if( supports3DTransforms ) {
-
-    var nodes = document.querySelectorAll( selector );
-
-    for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
-      var node = nodes[i];
-
-      if( !node.className ) ) {
-        node.className += ' roll';
-      }
-    };
-  }
-}
-					</code></pre>
-					<p>Courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
-				</section>
-
-				<section>
-					<h2>Intergalactic Interconnections</h2>
-					<p>
-						You can link between slides internally,
-						<a href="#/2/3">like this</a>.
-					</p>
-				</section>
-
-				<section>
-					<section>
-						<h2>Fragmented Views</h2>
-						<p>Hit the next arrow...</p>
-						<p class="fragment">... to step through ...</p>
-						<ol>
-							<li class="fragment"><code>any type</code></li>
-							<li class="fragment"><em>of view</em></li>
-							<li class="fragment"><strong>fragments</strong></li>
-						</ol>
-
-						<aside class="notes">
-							This slide has fragments which are also stepped through in the notes window.
-						</aside>
-					</section>
-					<section>
-						<h2>Fragment Styles</h2>
-						<p>There's a few styles of fragments, like:</p>
-						<p class="fragment grow">grow</p>
-						<p class="fragment shrink">shrink</p>
-						<p class="fragment roll-in">roll-in</p>
-						<p class="fragment fade-out">fade-out</p>
-						<p class="fragment highlight-red">highlight-red</p>
-						<p class="fragment highlight-green">highlight-green</p>
-						<p class="fragment highlight-blue">highlight-blue</p>
-					</section>
-				</section>
-
-				<section>
-					<h2>Spectacular image!</h2>
-					<a class="image" href="http://lab.hakim.se/meny/" target="_blank">
-						<img width="320" height="299" src="http://s3.amazonaws.com/hakim-static/portfolio/images/meny.png" alt="Meny">
-					</a>
-				</section>
-
-				<section>
-					<h2>Export to PDF</h2>
-					<p>Presentations can be <a href="https://github.com/hakimel/reveal.js#pdf-export">exported to PDF</a>, below is an example that's been uploaded to SlideShare.</p>
-					<iframe id="slideshare" src="http://www.slideshare.net/slideshow/embed_code/13872948" width="455" height="356" style="margin:0;overflow:hidden;border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen> </iframe>
-					<script>
-						document.getElementById('slideshare').attributeName = 'allowfullscreen';
-					</script>
-				</section>
-
-				<section>
-					<h2>Take a Moment</h2>
-					<p>
-						Press b or period on your keyboard to enter the 'paused' mode. This mode is helpful when you want to take distracting slides off the screen
-						during a presentation.
-					</p>
-				</section>
-
-				<section>
-					<h2>Stellar Links</h2>
-					<ul>
-						<li><a href="https://github.com/hakimel/reveal.js">Source code on GitHub</a></li>
-						<li><a href="http://hakim.se/projects/reveal-js">Leave feedback on my site</a></li>
-						<li><a href="http://twitter.com/hakimel">Follow me on Twitter</a></li>
-					</ul>
-				</section>
-
-				<section>
-					<h2>It's free</h2>
-					<p>
-						reveal.js and <a href="http://www.rvl.io">rvl.io</a> are entirely free but if you'd like to support the projects you can donate below.
-						Donations will go towards hosting and domain costs.
-					</p>
-					<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-						<input type="hidden" name="cmd" value="_donations">
-						<input type="hidden" name="business" value="hakim.elhattab@gmail.com">
-						<input type="hidden" name="lc" value="US">
-						<input type="hidden" name="item_name" value="reveal.js / rvl.io">
-						<input type="hidden" name="no_note" value="0">
-						<input type="hidden" name="currency_code" value="USD">
-						<input type="hidden" name="bn" value="PP-DonationsBF:btn_donate_LG.gif:NonHostedGuest">
-						<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-					</form>
-				</section>
-
-				<section>
-					<h1>THE END</h1>
-					<h3>BY Hakim El Hattab / hakim.se</h3>
-				</section>
-
-			</div>
-
-		</div>
-
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.min.js"></script>
-
-		<script>
-
-			// Full list of configuration options available here:
-			// https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				controls: true,
-				progress: true,
-				history: true,
-				center: true,
-
-				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
-
-				// Optional libraries used to extend on reveal.js
-				dependencies: [
-					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
-					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
-				]
-			});
-
-		</script>
-
-	</body>
+</body>
 </html>
